@@ -79,6 +79,9 @@ export const SOCIAL_PLATFORMS_LIST = `${NEXT_PUBLIC_API_HOST}api/socialplatforms
 // set external action links
 export const EXTERNAL_ACTIONS = `${API_LOCATION}api/externalactions`;
 
+// send a message to the fediverse
+export const FEDERATION_MESSAGE_SEND = `${API_LOCATION}federation/send`;
+
 export const API_YP_RESET = `${API_LOCATION}yp/reset`;
 
 export const TEMP_UPDATER_API = LOGS_ALL;

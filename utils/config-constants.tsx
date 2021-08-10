@@ -34,6 +34,12 @@ export const API_CHAT_FORBIDDEN_USERNAMES = '/chat/forbiddenusernames';
 export const API_EXTERNAL_ACTIONS = '/externalactions';
 export const API_VIDEO_CODEC = '/video/codec';
 
+// Federation
+export const API_FEDERATION_ENABLED = '/federation/enable';
+export const API_FEDERATION_PRIVATE = '/federation/private';
+export const API_FEDERATION_USERNAME = '/federation/username';
+export const API_FEDERATION_GOLIVE_MESSAGE = '/federation/livemessage';
+
 export async function postConfigUpdateToAPI(args: ApiPostArgs) {
   const { apiPath, data, onSuccess, onError } = args;
   const result = await fetchData(`${SERVER_CONFIG_UPDATE_URL}${apiPath}`, {
@@ -188,6 +194,41 @@ export const TEXTFIELD_PROPS_CHAT_FORBIDDEN_USERNAMES = {
   placeholder: 'username',
   label: 'Forbidden usernames',
   tip: 'A list of words in chat usernames you disallow.',
+};
+
+export const FIELD_PROPS_ENABLE_FEDERATION = {
+  apiPath: API_FEDERATION_ENABLED,
+  configPath: 'federation',
+  label: 'Enable Federation',
+  tip: 'Send and receive activites on the Fediverse.',
+  useSubmit: true,
+};
+
+export const FIELD_PROPS_FEDERATION_IS_PRIVATE = {
+  apiPath: API_FEDERATION_PRIVATE,
+  configPath: 'federation',
+  label: 'Private',
+  tip: 'Follow requests require approval and only followers will see your activity.',
+  useSubmit: true,
+};
+
+export const TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE = {
+  apiPath: API_FEDERATION_GOLIVE_MESSAGE,
+  configPath: 'federation',
+  maxLength: 500,
+  placeholder: 'My stream has started, tune in!',
+  label: 'Federated Go Live message',
+  tip: 'The message sent to the Fediverse announcing that your live stream has begun. Tags will be automatically added.',
+};
+
+export const TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER = {
+  apiPath: API_FEDERATION_USERNAME,
+  configPath: 'federation',
+  maxLength: 10,
+  placeholder: 'owncast',
+  default: 'owncast',
+  label: 'Fediverse username',
+  tip: 'The username used for sending and receiving activities from the Fediverse. For example, if you use "streamer" as a username you would send messages to the fediverse from @streamer@yourserver. It is not recommended you change this after it is set.',
 };
 
 export const VIDEO_VARIANT_SETTING_DEFAULTS = {

@@ -162,6 +162,20 @@ export default function MainLayout(props) {
             </Menu.Item>
           </SubMenu>
 
+          <SubMenu key="federation" title="Federation" icon={<MessageOutlined />}>
+            <Menu.Item key="federation-post" title="Post message">
+              <Link href="/federation/post">Post</Link>
+            </Menu.Item>
+
+            <Menu.Item key="federation-activities" title="Fediverse activities">
+              <Link href="/federation/activities">Activities</Link>
+            </Menu.Item>
+
+            <Menu.Item key="federation-followers" title="Fediverse followers">
+              <Link href="/federation/followers">Followers</Link>
+            </Menu.Item>
+          </SubMenu>
+
           <SubMenu key="configuration" title="Configuration" icon={<SettingOutlined />}>
             <Menu.Item key="config-public-details">
               <Link href="/config-public-details">General</Link>
@@ -176,6 +190,10 @@ export default function MainLayout(props) {
             <Menu.Item key="config-chat">
               <Link href="/config-chat">Chat</Link>
             </Menu.Item>
+            <Menu.Item key="config-federation">
+              <Link href="/config-federation">Federation</Link>
+            </Menu.Item>
+
             <Menu.Item key="config-storage">
               <Link href="/config-storage">S3 Storage</Link>
             </Menu.Item>
