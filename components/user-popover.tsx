@@ -12,7 +12,6 @@ import ModeratorUserbutton from './moderator-user-button';
 import { User, UserConnectionInfo } from '../types/chat';
 import { formatDisplayDate } from './user-table';
 import { formatUAstring } from '../utils/format';
-import ModeratorUserButton from './moderator-user-button';
 
 interface UserPopoverProps {
   user: User;
@@ -31,7 +30,6 @@ export default function UserPopover({ user, connectionInfo, children }: UserPopo
 
   const { displayName, createdAt, previousNames, nameChangedAt, disabledAt } = user;
   const { connectedAt, messageCount, userAgent } = connectionInfo || {};
-  const { scopes } = user;
 
   let lastNameChangeDate = null;
   const nameList = previousNames && [...previousNames];
@@ -44,7 +42,7 @@ export default function UserPopover({ user, connectionInfo, children }: UserPopo
 
   const dateObject = new Date(createdAt);
   const createdAtDate = format(dateObject, 'PP pp');
-  const isModerator = scopes !== null && scopes.includes('MODERATOR');
+
   const lastNameChangeDuration = lastNameChangeDate
     ? formatDistanceToNow(lastNameChangeDate)
     : null;

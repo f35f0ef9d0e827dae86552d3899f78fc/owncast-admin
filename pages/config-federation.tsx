@@ -3,13 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { TEXTFIELD_TYPE_TEXTAREA } from '../components/config/form-textfield';
 import TextFieldWithSubmit from '../components/config/form-textfield-with-submit';
 import ToggleSwitch from '../components/config/form-toggleswitch';
-import { createInputStatus, STATUS_ERROR, STATUS_SUCCESS } from '../utils/input-statuses';
 
 import { UpdateArgs } from '../types/config-section';
 import {
-  API_CHAT_FORBIDDEN_USERNAMES,
-  postConfigUpdateToAPI,
-  RESET_TIMEOUT,
   FIELD_PROPS_ENABLE_FEDERATION,
   TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE,
   TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER,
@@ -21,7 +17,7 @@ export default function ConfigFederation() {
   const { Title } = Typography;
   const [formDataValues, setFormDataValues] = useState(null);
   const serverStatusData = useContext(ServerStatusContext);
-  const { serverConfig, setFieldInConfigState } = serverStatusData || {};
+  const { serverConfig } = serverStatusData || {};
 
   const { federation } = serverConfig;
   const { enabled, isPrivate, username, goLiveMessage } = federation;

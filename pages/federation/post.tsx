@@ -61,7 +61,6 @@ export default function PostFederatedMessage() {
   }
 
   async function sendButtonClicked() {
-    alert(content);
     const data = {
       value: content,
     };
