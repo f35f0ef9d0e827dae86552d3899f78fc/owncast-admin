@@ -32,7 +32,7 @@ export default function ConfigFederation() {
   useEffect(() => {
     setFormDataValues({
       enabled,
-      private: isPrivate,
+      isPrivate,
       username,
       goLiveMessage,
     });

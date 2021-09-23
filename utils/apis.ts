@@ -82,6 +82,16 @@ export const EXTERNAL_ACTIONS = `${API_LOCATION}api/externalactions`;
 // send a message to the fediverse
 export const FEDERATION_MESSAGE_SEND = `${API_LOCATION}federation/send`;
 
+// Get followers
+export const FOLLOWERS = `${NEXT_PUBLIC_API_HOST}api/followers`;
+
+// Get followers pending approval
+export const FOLLOWERS_PENDING = `${API_LOCATION}followers/pending`;
+
+// Approve a follow request
+export const FOLLOWER_APPROVE = `${API_LOCATION}followers/approve`;
+
+
 export const API_YP_RESET = `${API_LOCATION}yp/reset`;
 
 export const TEMP_UPDATER_API = LOGS_ALL;
