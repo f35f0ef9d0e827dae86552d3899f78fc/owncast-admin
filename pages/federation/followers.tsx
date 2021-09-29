@@ -12,7 +12,7 @@ export interface Follower {
   link: string;
   account: string;
   image: string;
-  createdAt: Date;
+  timestamp: Date;
   approved: Date;
 }
 
@@ -22,11 +22,11 @@ export default function FediverseFollowers() {
 
   const getFollowers = async () => {
     try {
-      const followersResult = await fetchData(FOLLOWERS, { auth: false });
-      if (isEmptyObject(followersResult.followers)) {
+      const followersResult = await fetchData(FOLLOWERS, { auth: true });
+      if (isEmptyObject(followersResult)) {
         setFollowers([]);
       } else {
-        setFollowers(followersResult.followers);
+        setFollowers(followersResult);
       }
 
       const pendingFollowersResult = await fetchData(FOLLOWERS_PENDING, { auth: true });
@@ -122,19 +122,21 @@ export default function FediverseFollowers() {
     ),
     width: 50,
   });
+
   pendingColumns.push({
     title: 'Requested',
-    dataIndex: 'createdAt',
+    dataIndex: 'timestamp',
     key: 'requested',
     width: 200,
     render: timestamp => {
       const dateObject = new Date(timestamp);
       return <>{format(dateObject, 'P')}</>;
     },
-    sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    sorter: (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
     sortDirections: ['descend', 'ascend'] as SortOrder[],
     defaultSortOrder: 'descend' as SortOrder,
   });
+
   const pendingFollowView = followersPending.length > 0 && (
     <>
       <Title>Followers needing Approval</Title>
@@ -150,16 +152,17 @@ export default function FediverseFollowers() {
   );
 
   const followersColumns: ColumnsType<Follower> = [...columns];
+
   followersColumns.push({
     title: 'Added',
-    dataIndex: 'followed',
-    key: 'followed',
+    dataIndex: 'timestamp',
+    key: 'timestamp',
     width: 200,
     render: timestamp => {
       const dateObject = new Date(timestamp);
       return <>{format(dateObject, 'P')}</>;
     },
-    sorter: (a, b) => new Date(a.approved).getTime() - new Date(b.approved).getTime(),
+    sorter: (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
     sortDirections: ['descend', 'ascend'] as SortOrder[],
     defaultSortOrder: 'descend' as SortOrder,
   });

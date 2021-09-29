@@ -83,7 +83,7 @@ export const EXTERNAL_ACTIONS = `${API_LOCATION}api/externalactions`;
 export const FEDERATION_MESSAGE_SEND = `${API_LOCATION}federation/send`;
 
 // Get followers
-export const FOLLOWERS = `${NEXT_PUBLIC_API_HOST}api/followers`;
+export const FOLLOWERS = `${API_LOCATION}followers`;
 
 // Get followers pending approval
 export const FOLLOWERS_PENDING = `${API_LOCATION}followers/pending`;
