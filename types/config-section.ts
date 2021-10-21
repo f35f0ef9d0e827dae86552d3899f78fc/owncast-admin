@@ -94,6 +94,7 @@ export interface Federation {
   isPrivate: boolean;
   username: string;
   goLiveMessage: string;
+  showEngagement: boolean;
 }
 
 export interface ConfigDetails {

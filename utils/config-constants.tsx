@@ -39,6 +39,7 @@ export const API_FEDERATION_ENABLED = '/federation/enable';
 export const API_FEDERATION_PRIVATE = '/federation/private';
 export const API_FEDERATION_USERNAME = '/federation/username';
 export const API_FEDERATION_GOLIVE_MESSAGE = '/federation/livemessage';
+export const API_FEDERATION_SHOW_ENGAGEMENT = '/federation/showengagement';
 
 export async function postConfigUpdateToAPI(args: ApiPostArgs) {
   const { apiPath, data, onSuccess, onError } = args;
@@ -200,7 +201,7 @@ export const FIELD_PROPS_ENABLE_FEDERATION = {
   apiPath: API_FEDERATION_ENABLED,
   configPath: 'federation',
   label: 'Enable Federation',
-  tip: 'Send and receive activites on the Fediverse.',
+  tip: 'Send and receive activities on the Fediverse.',
   useSubmit: true,
 };
 
@@ -209,6 +210,14 @@ export const FIELD_PROPS_FEDERATION_IS_PRIVATE = {
   configPath: 'federation',
   label: 'Private',
   tip: 'Follow requests require approval and only followers will see your activity.',
+  useSubmit: true,
+};
+
+export const FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT = {
+  apiPath: API_FEDERATION_SHOW_ENGAGEMENT,
+  configPath: 'showEngagement',
+  label: 'Show engagement',
+  tip: 'Actions such as likes and re-posts will appear in the chat feed.',
   useSubmit: true,
 };
 

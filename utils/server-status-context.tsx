@@ -50,6 +50,7 @@ export const initialServerConfigState: ConfigDetails = {
     isPrivate: false,
     username: '',
     goLiveMessage: '',
+    showEngagement: true,
   },
   externalActions: [],
   supportedCodecs: [],

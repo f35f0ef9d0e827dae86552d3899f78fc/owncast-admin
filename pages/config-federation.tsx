@@ -10,6 +10,7 @@ import {
   TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE,
   TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER,
   FIELD_PROPS_FEDERATION_IS_PRIVATE,
+  FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT,
 } from '../utils/config-constants';
 import { ServerStatusContext } from '../utils/server-status-context';
 
@@ -20,7 +21,7 @@ export default function ConfigFederation() {
   const { serverConfig } = serverStatusData || {};
 
   const { federation } = serverConfig;
-  const { enabled, isPrivate, username, goLiveMessage } = federation;
+  const { enabled, isPrivate, username, goLiveMessage, showEngagement } = federation;
 
   const handleFieldChange = ({ fieldName, value }: UpdateArgs) => {
     setFormDataValues({
@@ -35,6 +36,7 @@ export default function ConfigFederation() {
       isPrivate,
       username,
       goLiveMessage,
+      showEngagement,
     });
   }, [serverConfig]);
 
@@ -74,6 +76,11 @@ export default function ConfigFederation() {
           value={formDataValues.goLiveMessage}
           initialValue={goLiveMessage}
           onChange={handleFieldChange}
+        />
+        <ToggleSwitch
+          fieldName="showEngagement"
+          {...FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT}
+          checked={formDataValues.showEngagement}
         />
         <br />
         <br />
