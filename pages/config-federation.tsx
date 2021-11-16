@@ -11,7 +11,7 @@ import {
   TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER,
   FIELD_PROPS_FEDERATION_IS_PRIVATE,
   FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT,
-  TEXTFIELD_PROPS_INSTANCE_URL,
+  TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL,
   postConfigUpdateToAPI,
 } from '../utils/config-constants';
 import { ServerStatusContext } from '../utils/server-status-context';
@@ -35,16 +35,17 @@ export default function ConfigFederation() {
 
   // if instanceUrl is empty, we should also turn OFF the `enabled` field of directory.
   const handleSubmitInstanceUrl = () => {
-    if (formDataValues.instanceUrl === '') {
-      if (enabled === true) {
-        postConfigUpdateToAPI({
-          apiPath: FIELD_PROPS_ENABLE_FEDERATION.apiPath,
-          data: { value: false },
-        });
-        setFormDataValues({
-          enabled: false,
-        });
-      }
+    const hasInstanceUrl = formDataValues.instanceUrl !== '';
+    const isInstanceUrlSecure = formDataValues.instanceUrl.startsWith('https://');
+
+    if (!hasInstanceUrl || !isInstanceUrlSecure) {
+      postConfigUpdateToAPI({
+        apiPath: FIELD_PROPS_ENABLE_FEDERATION.apiPath,
+        data: { value: false },
+      });
+      setFormDataValues({
+        enabled: false,
+      });
     }
   };
 
@@ -64,6 +65,7 @@ export default function ConfigFederation() {
   }
 
   const hasInstanceUrl = instanceUrl !== '';
+  const isInstanceUrlSecure = instanceUrl.startsWith('https://');
 
   return (
     <div className="config-server-details-form">
@@ -75,11 +77,11 @@ export default function ConfigFederation() {
           fieldName="enabled"
           {...FIELD_PROPS_ENABLE_FEDERATION}
           checked={formDataValues.enabled}
-          disabled={!hasInstanceUrl}
+          disabled={!hasInstanceUrl || !isInstanceUrlSecure}
         />
         <TextFieldWithSubmit
           fieldName="instanceUrl"
-          {...TEXTFIELD_PROPS_INSTANCE_URL}
+          {...TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL}
           value={formDataValues.instanceUrl}
           initialValue={yp.instanceUrl}
           type={TEXTFIELD_TYPE_URL}

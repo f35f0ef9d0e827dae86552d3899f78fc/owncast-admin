@@ -91,7 +91,6 @@ export const FOLLOWERS_PENDING = `${API_LOCATION}followers/pending`;
 // Approve a follow request
 export const FOLLOWER_APPROVE = `${API_LOCATION}followers/approve`;
 
-
 export const API_YP_RESET = `${API_LOCATION}yp/reset`;
 
 export const TEMP_UPDATER_API = LOGS_ALL;

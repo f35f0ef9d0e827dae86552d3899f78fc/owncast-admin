@@ -240,6 +240,18 @@ export const TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER = {
   tip: 'The username used for sending and receiving activities from the Fediverse. For example, if you use "streamer" as a username you would send messages to the fediverse from @streamer@yourserver. It is not recommended you change this after it is set.',
 };
 
+export const TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL = {
+  apiPath: API_INSTANCE_URL,
+  configPath: 'yp',
+  maxLength: 255,
+  placeholder: 'https://owncast.mysite.com',
+  label: 'Server URL',
+  tip: 'The full url to your Owncast server. Must use SSL (https). Changing the URL will stop existing followers from interacting with this server.',
+  type: TEXTFIELD_TYPE_URL,
+  pattern: DEFAULT_TEXTFIELD_URL_PATTERN,
+  useTrim: true,
+};
+
 export const VIDEO_VARIANT_SETTING_DEFAULTS = {
   // this one is currently unused
   audioBitrate: {
