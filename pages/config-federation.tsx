@@ -102,7 +102,6 @@ export default function ConfigFederation() {
           onChange={handleFieldChange}
         />
         <TextFieldWithSubmit
-          required
           fieldName="goLiveMessage"
           {...TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE}
           type={TEXTFIELD_TYPE_TEXTAREA}

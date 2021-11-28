@@ -227,7 +227,7 @@ export const TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE = {
   maxLength: 500,
   placeholder: 'My stream has started, tune in!',
   label: 'Federated Go Live message',
-  tip: 'The message sent to the Fediverse announcing that your live stream has begun. Tags will be automatically added.',
+  tip: 'The message sent to the Fediverse announcing that your live stream has begun. Tags will be automatically added. Leave blank to disable.',
 };
 
 export const TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER = {
