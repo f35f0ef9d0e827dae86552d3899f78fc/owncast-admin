@@ -95,6 +95,7 @@ export interface Federation {
   username: string;
   goLiveMessage: string;
   showEngagement: boolean;
+  blockedDomains: string[];
 }
 
 export interface ConfigDetails {

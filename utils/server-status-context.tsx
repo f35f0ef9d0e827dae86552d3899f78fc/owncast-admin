@@ -51,6 +51,7 @@ export const initialServerConfigState: ConfigDetails = {
     username: '',
     goLiveMessage: '',
     showEngagement: true,
+    blockedDomains: [],
   },
   externalActions: [],
   supportedCodecs: [],

@@ -40,6 +40,7 @@ export const API_FEDERATION_PRIVATE = '/federation/private';
 export const API_FEDERATION_USERNAME = '/federation/username';
 export const API_FEDERATION_GOLIVE_MESSAGE = '/federation/livemessage';
 export const API_FEDERATION_SHOW_ENGAGEMENT = '/federation/showengagement';
+export const API_FEDERATION_BLOCKED_DOMAINS = '/federation/blockdomains';
 
 export async function postConfigUpdateToAPI(args: ApiPostArgs) {
   const { apiPath, data, onSuccess, onError } = args;
@@ -250,6 +251,14 @@ export const TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL = {
   type: TEXTFIELD_TYPE_URL,
   pattern: DEFAULT_TEXTFIELD_URL_PATTERN,
   useTrim: true,
+};
+
+export const FIELD_PROPS_FEDERATION_BLOCKED_DOMAINS = {
+  apiPath: API_FEDERATION_BLOCKED_DOMAINS,
+  configPath: 'federation',
+  label: 'Blocked domains',
+  placeholder: 'bad.domain.biz',
+  tip: 'You can block specific domains from interacting with you.',
 };
 
 export const VIDEO_VARIANT_SETTING_DEFAULTS = {

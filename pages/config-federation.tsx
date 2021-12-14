@@ -1,10 +1,10 @@
-import { Typography, Modal, Button } from 'antd';
+import { Typography, Modal, Button, Row, Col } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { TEXTFIELD_TYPE_TEXTAREA, TEXTFIELD_TYPE_URL } from '../components/config/form-textfield';
 import TextFieldWithSubmit from '../components/config/form-textfield-with-submit';
 import ToggleSwitch from '../components/config/form-toggleswitch';
-
+import EditValueArray from '../components/config/edit-string-array';
 import { UpdateArgs } from '../types/config-section';
 import {
   FIELD_PROPS_ENABLE_FEDERATION,
@@ -13,9 +13,13 @@ import {
   FIELD_PROPS_FEDERATION_IS_PRIVATE,
   FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT,
   TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL,
+  FIELD_PROPS_FEDERATION_BLOCKED_DOMAINS,
   postConfigUpdateToAPI,
+  RESET_TIMEOUT,
+  API_FEDERATION_BLOCKED_DOMAINS,
 } from '../utils/config-constants';
 import { ServerStatusContext } from '../utils/server-status-context';
+import { createInputStatus, STATUS_ERROR, STATUS_SUCCESS } from '../utils/input-statuses';
 
 function FederationInfoModal({ cancelPressed, okPressed }) {
   return (
@@ -67,10 +71,12 @@ export default function ConfigFederation() {
   const [formDataValues, setFormDataValues] = useState(null);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const serverStatusData = useContext(ServerStatusContext);
-  const { serverConfig } = serverStatusData || {};
+  const { serverConfig, setFieldInConfigState } = serverStatusData || {};
+  const [blockedDomainSaveState, setBlockedDomainSaveState] = useState(null);
 
   const { federation, yp } = serverConfig;
-  const { enabled, isPrivate, username, goLiveMessage, showEngagement } = federation;
+  const { enabled, isPrivate, username, goLiveMessage, showEngagement, blockedDomains } =
+    federation;
   const { instanceUrl } = yp;
 
   const handleFieldChange = ({ fieldName, value }: UpdateArgs) => {
@@ -120,6 +126,56 @@ export default function ConfigFederation() {
     });
   }
 
+  function resetBlockedDomainsSaveState() {
+    setBlockedDomainSaveState(null);
+  }
+
+  function saveBlockedDomains() {
+    try {
+      postConfigUpdateToAPI({
+        apiPath: API_FEDERATION_BLOCKED_DOMAINS,
+        data: { value: formDataValues.blockedDomains },
+        onSuccess: () => {
+          setFieldInConfigState({
+            fieldName: 'forbiddenUsernames',
+            value: formDataValues.forbiddenUsernames,
+          });
+          setBlockedDomainSaveState(STATUS_SUCCESS);
+          setTimeout(resetBlockedDomainsSaveState, RESET_TIMEOUT);
+        },
+        onError: (message: string) => {
+          setBlockedDomainSaveState(createInputStatus(STATUS_ERROR, message));
+          setTimeout(resetBlockedDomainsSaveState, RESET_TIMEOUT);
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      setBlockedDomainSaveState(STATUS_ERROR);
+    }
+  }
+
+  function handleDeleteBlockedDomain(index: number) {
+    formDataValues.blockedDomains.splice(index, 1);
+    saveBlockedDomains();
+  }
+
+  function handleCreateBlockedDomain(domain: string) {
+    let newDomain;
+    try {
+      const u = new URL(domain);
+      newDomain = u.host;
+    } catch (_) {
+      newDomain = domain;
+    }
+
+    formDataValues.blockedDomains.push(newDomain);
+    handleFieldChange({
+      fieldName: 'blockedDomains',
+      value: formDataValues.blockedDomains,
+    });
+    saveBlockedDomains();
+  }
+
   useEffect(() => {
     setFormDataValues({
       enabled,
@@ -127,6 +183,7 @@ export default function ConfigFederation() {
       username,
       goLiveMessage,
       showEngagement,
+      blockedDomains,
       instanceUrl: yp.instanceUrl,
     });
   }, [serverConfig, yp]);
@@ -139,62 +196,74 @@ export default function ConfigFederation() {
   const isInstanceUrlSecure = instanceUrl.startsWith('https://');
 
   return (
-    <div className="config-server-details-form">
+    <div>
       <Title>Federation Settings</Title>
       Explain what the Fediverse is here and talk about what happens if you were to enable this
       feature.
-      <div className="form-module config-server-details-container">
-        <ToggleSwitch
-          fieldName="enabled"
-          onChange={handleEnabledSwitchChange}
-          {...FIELD_PROPS_ENABLE_FEDERATION}
-          checked={formDataValues.enabled}
-          disabled={!hasInstanceUrl || !isInstanceUrlSecure}
-        />
-        <TextFieldWithSubmit
-          fieldName="instanceUrl"
-          {...TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL}
-          value={formDataValues.instanceUrl}
-          initialValue={yp.instanceUrl}
-          type={TEXTFIELD_TYPE_URL}
-          onChange={handleFieldChange}
-          onSubmit={handleSubmitInstanceUrl}
-        />
-        <ToggleSwitch
-          fieldName="isPrivate"
-          {...FIELD_PROPS_FEDERATION_IS_PRIVATE}
-          checked={formDataValues.isPrivate}
-        />
-        <TextFieldWithSubmit
-          required
-          fieldName="username"
-          {...TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER}
-          value={formDataValues.username}
-          initialValue={username}
-          onChange={handleFieldChange}
-        />
-        <TextFieldWithSubmit
-          fieldName="goLiveMessage"
-          {...TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE}
-          type={TEXTFIELD_TYPE_TEXTAREA}
-          value={formDataValues.goLiveMessage}
-          initialValue={goLiveMessage}
-          onChange={handleFieldChange}
-        />
-        <ToggleSwitch
-          fieldName="showEngagement"
-          {...FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT}
-          checked={formDataValues.showEngagement}
-        />
-        {isInfoModalOpen && (
-          <FederationInfoModal
-            cancelPressed={federationInfoModalCancelPressed}
-            okPressed={federationInfoModalOkPressed}
+      <Row>
+        <Col span={15} className="form-module" style={{ marginRight: '15px' }}>
+          <ToggleSwitch
+            fieldName="enabled"
+            onChange={handleEnabledSwitchChange}
+            {...FIELD_PROPS_ENABLE_FEDERATION}
+            checked={formDataValues.enabled}
+            disabled={!hasInstanceUrl || !isInstanceUrlSecure}
           />
-        )}
-        <br />
-        <br />
-      </div>
+          <TextFieldWithSubmit
+            fieldName="instanceUrl"
+            {...TEXTFIELD_PROPS_FEDERATION_INSTANCE_URL}
+            value={formDataValues.instanceUrl}
+            initialValue={yp.instanceUrl}
+            type={TEXTFIELD_TYPE_URL}
+            onChange={handleFieldChange}
+            onSubmit={handleSubmitInstanceUrl}
+          />
+
+          <ToggleSwitch
+            fieldName="isPrivate"
+            {...FIELD_PROPS_FEDERATION_IS_PRIVATE}
+            checked={formDataValues.isPrivate}
+          />
+          <TextFieldWithSubmit
+            required
+            fieldName="username"
+            {...TEXTFIELD_PROPS_FEDERATION_DEFAULT_USER}
+            value={formDataValues.username}
+            initialValue={username}
+            onChange={handleFieldChange}
+          />
+          <TextFieldWithSubmit
+            fieldName="goLiveMessage"
+            {...TEXTFIELD_PROPS_FEDERATION_LIVE_MESSAGE}
+            type={TEXTFIELD_TYPE_TEXTAREA}
+            value={formDataValues.goLiveMessage}
+            initialValue={goLiveMessage}
+            onChange={handleFieldChange}
+          />
+          <ToggleSwitch
+            fieldName="showEngagement"
+            {...FIELD_PROPS_SHOW_FEDERATION_ENGAGEMENT}
+            checked={formDataValues.showEngagement}
+          />
+        </Col>
+        <Col span={8} className="form-module">
+          <EditValueArray
+            title={FIELD_PROPS_FEDERATION_BLOCKED_DOMAINS.label}
+            placeholder={FIELD_PROPS_FEDERATION_BLOCKED_DOMAINS.placeholder}
+            description={FIELD_PROPS_FEDERATION_BLOCKED_DOMAINS.tip}
+            values={formDataValues.blockedDomains}
+            handleDeleteIndex={handleDeleteBlockedDomain}
+            handleCreateString={handleCreateBlockedDomain}
+            submitStatus={createInputStatus(blockedDomainSaveState)}
+          />
+        </Col>
+      </Row>
+      {isInfoModalOpen && (
+        <FederationInfoModal
+          cancelPressed={federationInfoModalCancelPressed}
+          okPressed={federationInfoModalOkPressed}
+        />
+      )}
     </div>
   );
 }
