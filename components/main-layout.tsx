@@ -5,7 +5,6 @@ import Head from 'next/head';
 import { differenceInSeconds } from 'date-fns';
 import { useRouter } from 'next/router';
 import { Layout, Menu, Popover, Alert, Typography } from 'antd';
-
 import {
   SettingOutlined,
   HomeOutlined,
@@ -94,12 +93,7 @@ export default function MainLayout(props) {
     ? parseSecondsToDurationString(differenceInSeconds(new Date(), new Date(broadcaster.time)))
     : '';
   const currentThumbnail = online ? (
-    <img
-      src="/thumbnail.jpg"
-      className="online-thumbnail"
-      alt="current thumbnail"
-      style={{ width: '10rem' }}
-    />
+    <img src="/thumbnail.jpg" className="online-thumbnail" alt="current thumbnail" width="1rem" />
   ) : null;
   const statusIcon = online ? <PlayCircleFilled /> : <MinusSquareFilled />;
   const statusMessage = online ? `Online ${streamDurationString}` : 'Offline';
@@ -162,7 +156,11 @@ export default function MainLayout(props) {
             </Menu.Item>
           </SubMenu>
 
-          <SubMenu key="federation" title="Federation" icon={<MessageOutlined />}>
+          <SubMenu
+            key="federation"
+            title="Federation"
+            icon={<img alt="fediverse icon" src="/admin/fediverse-white.png" width="16rem" />}
+          >
             <Menu.Item key="federation-post" title="Post message">
               <Link href="/federation/post">Post</Link>
             </Menu.Item>
