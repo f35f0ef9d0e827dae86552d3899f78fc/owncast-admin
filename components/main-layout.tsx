@@ -159,7 +159,14 @@ export default function MainLayout(props) {
           <SubMenu
             key="federation"
             title="Federation"
-            icon={<img alt="fediverse icon" src="/admin/fediverse-white.png" width="16rem" />}
+            icon={
+              <img
+                alt="fediverse icon"
+                src="/admin/fediverse-white.png"
+                width="15rem"
+                style={{ opacity: 0.6, position: 'relative', top: '-1px' }}
+              />
+            }
           >
             <Menu.Item key="federation-post" title="Post message">
               <Link href="/federation/post">Post</Link>
