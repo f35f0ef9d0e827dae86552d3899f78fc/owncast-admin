@@ -1,66 +1,28 @@
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
-import MarkdownIt from 'markdown-it';
-import 'react-markdown-editor-lite/lib/index.css';
-import { Button } from 'antd';
+
+import { Button, Space, Input } from 'antd';
+import { STATUS_ERROR, STATUS_SUCCESS } from '../../utils/input-statuses';
 import { fetchData, FEDERATION_MESSAGE_SEND } from '../../utils/apis';
+import { RESET_TIMEOUT } from '../../utils/config-constants';
 
-// Might as well use the same rules as Mastodon since
-// they are going to be the biggest game in town with
-// regards to viewing these posts.
-// https://docs.joinmastodon.org/spec/activitypub/#sanitization
-const disable = [
-  'replacements',
-  'smartquotes',
-  'table',
-  'fence',
-  'blockquote',
-  'hr',
-  'list',
-  'reference',
-  'heading',
-  'lheading',
-  'html_block',
-  'escape',
-  'strikethrough',
-  'image',
-  'html_inline',
-  'entity',
-  'backticks',
-  'emphasis',
-];
-const enable = [
-  'normalize',
-  'block',
-  'inline',
-  'linkify',
-  'autolink',
-  'link',
-  'paragraph',
-  'text',
-  'newline',
-];
-
-const mdParser = new MarkdownIt('zero', {
-  html: false,
-  breaks: true,
-  linkify: true,
-})
-  .disable(disable)
-  .enable(enable);
-const MdEditor = dynamic(() => import('react-markdown-editor-lite'), {
-  ssr: false,
-});
+const { TextArea } = Input;
 
 export default function PostFederatedMessage() {
   const [content, setContent] = useState('');
+  const [postPending, setPostPending] = useState(false);
+  const [postSuccessState, setPostSuccessState] = useState(null);
 
-  function handleEditorChange({ text }) {
-    // TODO: Add character limit counter to 500 or something.
-    setContent(text);
+  function handleEditorChange(e) {
+    setContent(e.target.value);
+  }
+
+  function resetPostSucessState() {
+    setPostSuccessState(null);
   }
 
   async function sendButtonClicked() {
+    setPostPending(true);
+
     const data = {
       value: content,
     };
@@ -70,31 +32,30 @@ export default function PostFederatedMessage() {
         method: 'POST',
         auth: true,
       });
-      // return result.success;
+      setPostSuccessState(STATUS_SUCCESS);
+      setTimeout(resetPostSucessState, RESET_TIMEOUT);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
+      setPostSuccessState(STATUS_ERROR);
     }
+
+    setPostPending(false);
   }
 
   return (
-    <div>
-      Form for posting a fediverse message goes here.
-      <MdEditor
-        placeholder="Type your social post to send to the Fediverse here. Very limited Markdown is supported. Not all Fediverse services will display all formatting."
-        style={{ height: '20vh' }}
-        value={content}
-        renderHTML={(c: string) => mdParser.render(c)}
+    <Space id="fediverse-post-container" direction="vertical">
+      You can send a post to your followers.
+      <TextArea
+        size="large"
+        showCount
+        maxLength={500}
         onChange={handleEditorChange}
-        view={{ menu: false }}
-        config={{
-          htmlClass: 'markdown-editor-preview-pane',
-          markdownClass: 'markdown-editor-pane',
-        }}
+        id="fediverse-post-input"
       />
-      <Button type="primary" onClick={sendButtonClicked}>
-        Post to Fediverse
+      <Button type="primary" onClick={sendButtonClicked} disabled={postPending || postSuccessState}>
+        {postSuccessState?.toUpperCase() || 'Post to Fediverse'}
       </Button>
-    </div>
+    </Space>
   );
 }
